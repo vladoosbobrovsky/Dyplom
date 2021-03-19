@@ -1,0 +1,80 @@
+# spring petclinic ingress
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: spring-petclinic-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: bobrishka.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: spring-petclinic
+          servicePort: 8080
+---
+# spring petclinic service 
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-petclinic
+  labels:
+    app: spring-petclinic
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: spring-petclinic
+    tier: frontend
+  type: NodePort
+---
+# spring petclinic deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-petclinic
+  labels:
+    app: spring-petclinic
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: spring-petclinic
+  strategy:
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 50%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: spring-petclinic
+        tier: frontend
+    spec:
+      containers:
+      - name: spring-petclinic
+        image: 20000903/spring-petclinic:devops-spring-petclinic
+        env:
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            secretKeyRef:
+              name: spring-env
+              key: spring-datasource-url
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 50
+          periodSeconds: 15
+          failureThreshold: 15
+      terminationGracePeriodSeconds: 30
+
