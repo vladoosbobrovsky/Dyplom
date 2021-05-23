@@ -10,4 +10,4 @@ secretGenerator:
   - spring-datasource-url=jdbc:mysql://mysql-petclinic/petclinic?autoReconnect=true&useSSL=false
 resources:
   - mysql-resource.yaml
-  - spring-petclinic-resource.yaml
+  - spring-petclinic.yaml
