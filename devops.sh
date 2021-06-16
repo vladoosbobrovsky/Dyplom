@@ -29,5 +29,5 @@ docker images | grep $DOCKER_TAG
 
 echo "Push Docker image to the DockerHub" | $BOXES
 docker push $DOCKER_MAINTAINER/spring-petclinic:$DOCKER_TAG
-echo "Docker image is successfuly pushed to Hub !!!" | $BOXES
+#
 echo "Docker image is successfuly pushed to Hub !!!" | $BOXES
