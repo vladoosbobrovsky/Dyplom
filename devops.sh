@@ -19,6 +19,7 @@ fi
 echo "Download the Spring-Petclinic and build it" | $BOXES
 git clone https://github.com/spring-projects/spring-petclinic.git
 cd spring-petclinic
+sed 's/h2/mysql/'  src/main/resources/application.properties
 ./mvnw package -DskipTests
 
 
